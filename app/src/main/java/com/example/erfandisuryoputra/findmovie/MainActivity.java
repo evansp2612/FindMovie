@@ -1,10 +1,13 @@
 package com.example.erfandisuryoputra.findmovie;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
@@ -16,6 +19,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
                 //Get movie
-                String url = "http://www.omdbapi.com/?t=" + searchKey.getText().toString() +"&apikey=3f9e318f";
+                String url = "http://www.omdbapi.com/?t=" + searchKey.getText() +"&type=movie&apikey=3f9e318f";
                 getMoviesTask task = new getMoviesTask();
                 task.execute(url);
             }
@@ -72,6 +78,21 @@ public class MainActivity extends AppCompatActivity {
         String plot = "";
         String rating = "";
 
+        TextView titleView = (TextView) findViewById(R.id.movieName);
+        ImageView posterView = (ImageView) findViewById(R.id.moviePoster);
+        TextView genreView = (TextView) findViewById(R.id.movieGenre);
+        TextView directorView = (TextView) findViewById(R.id.movieDirector);
+        TextView plotView = (TextView) findViewById(R.id.moviePlot);
+        TextView ratingView = (TextView) findViewById(R.id.movieImdbRating);
+
+        private final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+
+        @Override
+        protected void onPreExecute() {
+            this.dialog.setMessage("Searching...");
+            this.dialog.show();
+        }
+
         @Override
         protected String doInBackground(String... params) {
             try {
@@ -81,8 +102,16 @@ public class MainActivity extends AppCompatActivity {
                 String result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
                 JSONObject response = new JSONObject(result);
 
+                if (response.getString("Response").equals("False"))
+                    return "FAIL";
+
                 title = response.getString("Title");
-                poster= response.getString("Poster");
+                poster = response.getString("Poster");
+                //Resize poster
+                if (!poster.equals("N/A")){
+                    poster = poster.substring(0, poster.length()-7);
+                    poster = poster + "600.jpg";
+                }
                 year = response.getString("Year");
                 genre = response.getString("Genre");
                 director= response.getString("Director");
@@ -102,51 +131,32 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String response) {
             if (response.equals("SUCCESS")) {
-                TextView textView = (TextView) findViewById(R.id.movieName);
-                textView.setText(title + " ("+year+")");
-
-                textView = (TextView) findViewById(R.id.movieGenre);
-                textView.setText(genre);
-
-                ImageView posterimg = (ImageView) findViewById(R.id.moviePoster);
-                SetPoster task = new SetPoster(posterimg);
-                task.execute(poster);
-
-                textView = (TextView) findViewById(R.id.movieDirector);
-                textView.setText("Director: "+director);
-
-                textView = (TextView) findViewById(R.id.movieImdbRating);
-                textView.setText("IMDB Rating: "+rating);
-
-                textView = (TextView) findViewById(R.id.moviePlot);
-                textView.setText(plot);
+                titleView.setText(title + " ("+year+")");
+                Picasso.get().load(poster).error(R.drawable.poster).into(posterView);
+                genreView.setText(genre);
+                directorView.setText("Director: "+director);
+                ratingView.setText("IMDB Rating: "+rating);
+                plotView.setText(plot);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    textView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
+                    plotView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
                 }
             }
-        }
-    }
+            else {
+                Handler error = new Handler(getApplicationContext().getMainLooper());
+                error.post(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "\""+searchKey.getText()+"\" not found", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-    private class SetPoster extends AsyncTask<String, Void, Bitmap> {
-        ImageView poster;
-        public SetPoster(ImageView bmImage) {
-            this.poster = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String url = urls[0];
-            Bitmap image = null;
-            try {
-                InputStream in = new java.net.URL(url).openStream();
-                image = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                e.printStackTrace();
+                titleView.setText("");
+                posterView.setImageResource(0);
+                genreView.setText("");
+                directorView.setText("");
+                ratingView.setText("");
+                plotView.setText("");
             }
-            return image;
-        }
-
-        protected void onPostExecute(Bitmap image) {
-            poster.setImageBitmap(image);
+            this.dialog.dismiss();
         }
     }
 }
