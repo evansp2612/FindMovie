@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         String poster = "";
         String year = "";
         String genre = "";
+        String runtime = "";
         String director = "";
         String plot = "";
         String rating = "";
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         TextView titleView = (TextView) findViewById(R.id.movieName);
         ImageView posterView = (ImageView) findViewById(R.id.moviePoster);
         TextView genreView = (TextView) findViewById(R.id.movieGenre);
+        TextView runtimeView = (TextView) findViewById(R.id.movieRuntime);
         TextView directorView = (TextView) findViewById(R.id.movieDirector);
         TextView plotView = (TextView) findViewById(R.id.moviePlot);
         TextView ratingView = (TextView) findViewById(R.id.movieImdbRating);
@@ -127,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 year = response.getString("Year");
                 genre = response.getString("Genre");
+                runtime = response.getString("Runtime");
                 director = response.getString("Director");
                 plot = response.getString("Plot");
                 rating = response.getString("imdbRating");
@@ -147,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 titleView.setText(title + " ("+year+")");
                 Picasso.get().load(poster).error(R.drawable.poster).into(posterView);
                 genreView.setText(genre);
+                runtimeView.setText(runtime);
                 directorView.setText("Director: "+director);
                 ratingView.setText("IMDB Rating: "+rating);
                 plotView.setText(plot);
