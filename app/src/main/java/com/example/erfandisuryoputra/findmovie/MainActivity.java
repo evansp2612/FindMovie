@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
     EditText searchKey;
     Button searchButton;
+    getMoviesTask getMovies;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,10 +65,19 @@ public class MainActivity extends AppCompatActivity {
 
                 //Get movie
                 String url = "http://www.omdbapi.com/?t=" + searchKey.getText() +"&type=movie&apikey=3f9e318f";
-                getMoviesTask task = new getMoviesTask();
-                task.execute(url);
+                getMovies = new getMoviesTask();
+                getMovies.execute(url);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if (getMovies != null && getMovies.dialog.isShowing())
+            getMovies.cancel(true);
+        else
+            finish();
     }
 
     private class getMoviesTask extends AsyncTask<String,String,String> {
@@ -90,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             this.dialog.setMessage("Searching...");
+            this.dialog.setCanceledOnTouchOutside(false);
+            this.dialog.onBackPressed();
             this.dialog.show();
         }
 
@@ -114,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 year = response.getString("Year");
                 genre = response.getString("Genre");
-                director= response.getString("Director");
+                director = response.getString("Director");
                 plot = response.getString("Plot");
                 rating = response.getString("imdbRating");
 
@@ -148,13 +161,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "\""+searchKey.getText()+"\" not found", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-                titleView.setText("");
-                posterView.setImageResource(0);
-                genreView.setText("");
-                directorView.setText("");
-                ratingView.setText("");
-                plotView.setText("");
             }
             this.dialog.dismiss();
         }
