@@ -23,7 +23,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:id="@+id/editText"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:textCursorDrawable="@color/gold"
+        android:backgroundTint="@color/gold"/>
 
     <Button
         android:layout_width="match_parent"
