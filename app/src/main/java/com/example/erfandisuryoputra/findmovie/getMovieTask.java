@@ -1,15 +1,12 @@
 package com.example.erfandisuryoputra.findmovie;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Handler;
 import android.text.Layout;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -40,17 +37,17 @@ public class getMovieTask extends AsyncTask<String,String,String> {
     TextView plotView;
     TextView ratingView;
 
-    Context context;
-    //String searchKey;
+    Activity activity;
 
-//    public final ProgressDialog dialog = new ProgressDialog(context);
+    public ProgressDialog dialog;
 
     @Override
     protected void onPreExecute() {
-//        this.dialog.setMessage("Searching...");
-//        this.dialog.setCanceledOnTouchOutside(false);
-//        this.dialog.onBackPressed();
-//        this.dialog.show();
+        dialog = new ProgressDialog(activity);
+        dialog.setMessage("Loading...");
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.onBackPressed();
+        dialog.show();
     }
 
     @Override
@@ -70,7 +67,7 @@ public class getMovieTask extends AsyncTask<String,String,String> {
             //Resize poster
             if (!poster.equals("N/A")){
                 poster = poster.substring(0, poster.length()-7);
-                poster = poster + "1000.jpg";
+                poster = poster + "800.jpg";
             }
             year = response.getString("Year");
             genre = response.getString("Genre");
@@ -91,26 +88,16 @@ public class getMovieTask extends AsyncTask<String,String,String> {
 
     @Override
     protected void onPostExecute(String response) {
-        //if (response.equals("SUCCESS")) {
-            titleView.setText(title + " ("+year+")");
-            Picasso.get().load(poster).error(R.drawable.poster).into(posterView);
-            genreView.setText(genre);
-            runtimeView.setText(runtime);
-            directorView.setText("Director: "+director);
-            ratingView.setText("IMDB Rating: "+rating);
-            plotView.setText(plot);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                plotView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
-            }
-//        }
-//        else {
-//            Handler error = new Handler(context.getMainLooper());
-//            error.post(new Runnable() {
-//                public void run() {
-//                    Toast.makeText(context, "\""+searchKey+"\" not found", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//        }
-//        this.dialog.dismiss();
+        titleView.setText(title + " ("+year+")");
+        Picasso.get().load(poster).error(R.drawable.poster).into(posterView);
+        genreView.setText(genre);
+        runtimeView.setText(runtime);
+        directorView.setText("Director: "+director);
+        ratingView.setText("IMDB Rating: "+rating);
+        plotView.setText(plot);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            plotView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
+        }
+        dialog.dismiss();
     }
 }

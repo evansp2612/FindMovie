@@ -22,7 +22,7 @@ public class viewMovie extends AppCompatActivity {
         getMovie.directorView = (TextView) findViewById(R.id.movieDirector);
         getMovie.plotView = (TextView) findViewById(R.id.moviePlot);
         getMovie.ratingView = (TextView) findViewById(R.id.movieImdbRating);
-        getMovie.context = getApplicationContext();
+        getMovie.activity = viewMovie.this;
         getMovie.execute(url);
     }
 }

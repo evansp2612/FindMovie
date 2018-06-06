@@ -1,18 +1,12 @@
 package com.example.erfandisuryoputra.findmovie;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +23,7 @@ public class searchMoviesTask extends AsyncTask<String,String,String> {
 
     ArrayList<Movie> mMovieList;
     RecyclerView mRecyclerView;
+    Activity activity;
     Context context;
     String searchKey;
 
@@ -36,11 +31,11 @@ public class searchMoviesTask extends AsyncTask<String,String,String> {
 
     @Override
     protected void onPreExecute() {
-//        dialog = new ProgressDialog(context);
-//        dialog.setMessage("Searching...");
-//        dialog.setCanceledOnTouchOutside(false);
-//        dialog.onBackPressed();
-//        dialog.show();
+        dialog = new ProgressDialog(activity);
+        dialog.setMessage("Searching...");
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.onBackPressed();
+        dialog.show();
     }
 
     @Override
@@ -58,7 +53,11 @@ public class searchMoviesTask extends AsyncTask<String,String,String> {
 
             for(int i=0;i < allmovies.length();i++){
                 JSONObject movie = allmovies.getJSONObject(i);
-                mMovieList.add(new Movie(movie.getString("Title"), movie.getString("Year"), movie.getString("Poster"), movie.getString("imdbID")));
+                String title = movie.getString("Title");
+                String year = movie.getString("Year");
+                String poster = movie.getString("Poster");
+                String id = movie.getString("imdbID");
+                mMovieList.add(new Movie(title, year, poster, id));
             }
 
             return "SUCCESS";
@@ -84,6 +83,6 @@ public class searchMoviesTask extends AsyncTask<String,String,String> {
                 }
             });
         }
-//        this.dialog.dismiss();
+        dialog.dismiss();
     }
 }

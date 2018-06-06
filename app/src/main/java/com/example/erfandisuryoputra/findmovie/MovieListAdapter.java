@@ -25,11 +25,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.erfandisuryoputra.findmovie.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 /**
  * Shows how to implement a simple Adapter for a RecyclerView.
