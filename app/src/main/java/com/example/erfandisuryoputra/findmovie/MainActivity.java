@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                     getMovie.execute(url);
                 }
                 else
-                    Toast.makeText(getApplicationContext(), "No Connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "No connection", Toast.LENGTH_SHORT).show();
             }
         });
     }

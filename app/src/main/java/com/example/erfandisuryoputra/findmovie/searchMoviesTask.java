@@ -47,7 +47,6 @@ public class searchMoviesTask extends AsyncTask<String,String,String> {
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             String result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
             JSONObject response = new JSONObject(result);
-            JSONArray allmovies = response.getJSONArray("Search");
 
             if (response.getString("Response").equals("False")) {
                 Handler error = new Handler(context.getMainLooper());
@@ -56,9 +55,11 @@ public class searchMoviesTask extends AsyncTask<String,String,String> {
                         Toast.makeText(context, "\""+searchKey+"\" not found", Toast.LENGTH_SHORT).show();
                     }
                 });
+                dialog.dismiss();
                 cancel(true);
             }
 
+            JSONArray allmovies = response.getJSONArray("Search");
             for(int i=0;i < allmovies.length();i++){
                 JSONObject movie = allmovies.getJSONObject(i);
                 String title = movie.getString("Title");

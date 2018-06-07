@@ -73,7 +73,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
                 context.startActivity(intent);
             }
             else
-                Toast.makeText(context, "No Connection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "No connection", Toast.LENGTH_SHORT).show();
         }
     }
 
