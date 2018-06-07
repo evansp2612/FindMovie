@@ -43,13 +43,21 @@ public class searchMoviesTask extends AsyncTask<String,String,String> {
         try {
             URL url = new URL(params[0]);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(10000);
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             String result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
             JSONObject response = new JSONObject(result);
             JSONArray allmovies = response.getJSONArray("Search");
 
-            if (response.getString("Response").equals("False"))
-                return "FAIL";
+            if (response.getString("Response").equals("False")) {
+                Handler error = new Handler(context.getMainLooper());
+                error.post(new Runnable() {
+                    public void run() {
+                        Toast.makeText(context, "\""+searchKey+"\" not found", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                cancel(true);
+            }
 
             for(int i=0;i < allmovies.length();i++){
                 JSONObject movie = allmovies.getJSONObject(i);
@@ -59,7 +67,6 @@ public class searchMoviesTask extends AsyncTask<String,String,String> {
                 String id = movie.getString("imdbID");
                 mMovieList.add(new Movie(title, year, poster, id));
             }
-
             return "SUCCESS";
         } catch (IOException e) {
             e.printStackTrace();
@@ -79,7 +86,7 @@ public class searchMoviesTask extends AsyncTask<String,String,String> {
             Handler error = new Handler(context.getMainLooper());
             error.post(new Runnable() {
                 public void run() {
-                    Toast.makeText(context, "\""+searchKey+"\" not found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Can't connect to server", Toast.LENGTH_SHORT).show();
                 }
             });
         }

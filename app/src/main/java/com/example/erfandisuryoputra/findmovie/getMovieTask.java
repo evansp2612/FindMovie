@@ -2,11 +2,14 @@ package com.example.erfandisuryoputra.findmovie;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.text.Layout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -38,6 +41,7 @@ public class getMovieTask extends AsyncTask<String,String,String> {
     TextView ratingView;
 
     Activity activity;
+    Context context;
 
     public ProgressDialog dialog;
 
@@ -55,6 +59,7 @@ public class getMovieTask extends AsyncTask<String,String,String> {
         try {
             URL url = new URL(params[0]);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(10000);
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             String result = org.apache.commons.io.IOUtils.toString(in, "UTF-8");
             JSONObject response = new JSONObject(result);
@@ -88,15 +93,26 @@ public class getMovieTask extends AsyncTask<String,String,String> {
 
     @Override
     protected void onPostExecute(String response) {
-        titleView.setText(title + " ("+year+")");
-        Picasso.get().load(poster).error(R.drawable.poster).into(posterView);
-        genreView.setText(genre);
-        runtimeView.setText(runtime);
-        directorView.setText("Director: "+director);
-        ratingView.setText("IMDB Rating: "+rating);
-        plotView.setText(plot);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            plotView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
+        if (response.equals("SUCCESS")) {
+            titleView.setText(title + " (" + year + ")");
+            Picasso.get().load(poster).error(R.drawable.poster).placeholder(R.drawable.progress_animation).into(posterView);
+            genreView.setText(genre);
+            runtimeView.setText(runtime);
+            directorView.setText("Director: " + director);
+            ratingView.setText("IMDB Rating: " + rating);
+            plotView.setText(plot);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                plotView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
+            }
+        }
+        else {
+            Handler error = new Handler(context.getMainLooper());
+            error.post(new Runnable() {
+                public void run() {
+                    Toast.makeText(context, "Can't connect to server", Toast.LENGTH_SHORT).show();
+                }
+            });
+            activity.finish();
         }
         dialog.dismiss();
     }

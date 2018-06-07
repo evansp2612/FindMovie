@@ -25,4 +25,10 @@ public class viewMovie extends AppCompatActivity {
         getMovie.activity = viewMovie.this;
         getMovie.execute(url);
     }
+
+    @Override
+    public void onBackPressed()
+    {
+        finish();
+    }
 }

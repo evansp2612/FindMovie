@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -66,9 +67,13 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         public void onClick(View v) {
             // All we do here is prepend "Clicked! " to the text in the view, to verify that
             // the correct item was clicked. The underlying data does not change.
-            Intent intent = new Intent(context, viewMovie.class);
-            intent.putExtra("imdbID", id);
-            context.startActivity(intent);
+            if (Util.haveConnection(context)) {
+                Intent intent = new Intent(context, viewMovie.class);
+                intent.putExtra("imdbID", id);
+                context.startActivity(intent);
+            }
+            else
+                Toast.makeText(context, "No Connection", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -107,7 +112,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         // Add the data to the view holder.
         holder.titleItemView.setText(mCurrent.title);
         holder.yearItemView.setText(mCurrent.year);
-        Picasso.get().load(mCurrent.poster).error(R.drawable.poster).into(holder.posterItemView);
+        Picasso.get().load(mCurrent.poster).error(R.drawable.poster).placeholder(R.drawable.progress_animation).into(holder.posterItemView);
         holder.id = mCurrent.imdbID;
     }
 

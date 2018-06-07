@@ -1,7 +1,6 @@
 package com.example.erfandisuryoputra.findmovie;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-                if (haveConnection()) {
+                if (Util.haveConnection(getApplicationContext())) {
                     //Get movie
                     String url = "http://www.omdbapi.com/?s=" + searchKey.getText() + "&type=movie&apikey=3f9e318f";
                     getMovie = new searchMoviesTask();
@@ -88,13 +87,5 @@ public class MainActivity extends AppCompatActivity {
             getMovie.cancel(true);
         else
             finish();
-    }
-
-    private boolean haveConnection() {
-        final ConnectivityManager connMgr = (ConnectivityManager) this
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        final android.net.NetworkInfo wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        final android.net.NetworkInfo mobile = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        return (wifi.isConnectedOrConnecting() || mobile.isConnectedOrConnecting());
     }
 }
