@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
 
     EditText searchKey;
     Button searchButton;
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getSupportActionBar().hide();
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_search);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mAdapter = new MovieListAdapter(this, mMovieList);
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                     String url = "http://www.omdbapi.com/?s=" + searchKey.getText() + "&type=movie&apikey=3f9e318f";
                     getMovie = new searchMoviesTask();
                     getMovie.context = getApplicationContext();
-                    getMovie.activity = MainActivity.this;
+                    getMovie.activity = SearchActivity.this;
                     getMovie.searchKey = searchKey.getText().toString();
                     getMovie.mRecyclerView = mRecyclerView;
                     getMovie.mMovieList = mMovieList;

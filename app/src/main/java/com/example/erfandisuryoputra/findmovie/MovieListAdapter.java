@@ -68,7 +68,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
             // All we do here is prepend "Clicked! " to the text in the view, to verify that
             // the correct item was clicked. The underlying data does not change.
             if (Util.haveConnection(context)) {
-                Intent intent = new Intent(context, viewMovie.class);
+                Intent intent = new Intent(context, ViewMovieActivity.class);
                 intent.putExtra("imdbID", id);
                 context.startActivity(intent);
             }

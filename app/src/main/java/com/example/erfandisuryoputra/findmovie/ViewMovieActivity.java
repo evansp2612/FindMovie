@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class viewMovie extends AppCompatActivity {
+public class ViewMovieActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +22,7 @@ public class viewMovie extends AppCompatActivity {
         getMovie.directorView = (TextView) findViewById(R.id.movieDirector);
         getMovie.plotView = (TextView) findViewById(R.id.moviePlot);
         getMovie.ratingView = (TextView) findViewById(R.id.movieImdbRating);
-        getMovie.activity = viewMovie.this;
+        getMovie.activity = ViewMovieActivity.this;
         getMovie.context = getApplicationContext();
         getMovie.execute(url);
     }
